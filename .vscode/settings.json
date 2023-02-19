@@ -1,0 +1,13 @@
+{
+    "robloxLsp.diagnostics.globals": [
+        "getgenv",
+        "import",
+        "ProminentU",
+        "env",
+        "syn",
+        "getconnections",
+        "newcclosure",
+        "signal",
+        "setreadonly"
+    ],
+}

@@ -1,24 +1,4 @@
-ProminentU = {Initialize = {
-Loader = function()
-local Signal = import("Modules/Std/Signal.lua")
-local Loaded = Signal.new()
-local LoadingFailed = Signal.new()
-if game.PlaceId == 606849621 then
-    getgenv().env = import("Modules/Services/Handler.lua")
-    print("[ProminentU]: Environment loaded")
-
-    import("Modules/Hooks/Notification.lua")
-    print("[ProminentU]: Hooks loaded")
-end
-if not next(env) or not env then
-    getgenv().env.loaded = false
-    LoadingFailed:Fire()
-else
-    Loaded:Fire()
-end
-end,
-},
-Modules = {
+ProminentU = {Modules = {
 Hooks = {
 Notification = function()
 local NotificationService = env:GetService("NotificationService")
@@ -70,24 +50,31 @@ local env = {
         NilService = {}
     },
 	signal = import("Modules/Std/Signal.lua"),
-	loaded = true
+	_loaded = true,
 }
 
 env.GetService = function(self,Service)
 	return self.AvailableServices[Service] or self.AvailableServices.NilService
 end
 
-setmetatable(env.AvailableServices.NilService, {
-	__index = function(t,i)
-		return print(string.format("Attempted to index %s with NilService"), type(i))
+setmetatable(env, {
+	__index = function(self,i)
+		return self:GetService("NilService")
 	end,
 })
 
-setmetatable(env, {
-	__index = function(t,i)
-		return env:GetService("NilService")
+setmetatable(env.AvailableServices.NilService, {
+	__index = function(self,i)
+		return print(string.format("Attempted to index %s with NilService"), type(self))
 	end,
 })
+
+env.IsLoaded = function(self)
+	return self._loaded
+end
+
+env.Loaded = env.signal.new()
+env.LoadingFailed = env.signal.new()
 
 return env
 end,
@@ -118,7 +105,6 @@ end,
 Resources = {
 },
 }
-local ProximityPromptService = game:GetService("ProximityPromptService")
 local Loaded = {}
 
 import = function(dir)
@@ -147,7 +133,7 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
-getgenv().env = nil
+getgenv().env = {}
 getgenv().import = import
 
 if game.PlaceId == 606849621 then
@@ -159,8 +145,11 @@ if game.PlaceId == 606849621 then
     print("[ProminentU]: Hooks loaded")
 end
 if not next(env) or not env then
-    getgenv().env.loaded = false
-    warn("[ProminentU]: There was an error while loading the environment.")
+    getgenv().env._loaded = false
+    getgenv().env.LoadingFailed:Fire()
+else
+    env._loaded = true
+    env.Loaded:Fire()
 end
 
 setreadonly(env,true)

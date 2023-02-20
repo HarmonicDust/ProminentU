@@ -1,4 +1,3 @@
-local ProximityPromptService = game:GetService("ProximityPromptService")
 local Loaded = {}
 
 import = function(dir)
@@ -27,7 +26,7 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
-getgenv().env = nil
+getgenv().env = {}
 getgenv().import = import
 
 if game.PlaceId == 606849621 then
@@ -39,8 +38,11 @@ if game.PlaceId == 606849621 then
     print("[ProminentU]: Hooks loaded")
 end
 if not next(env) or not env then
-    getgenv().env.loaded = false
-    warn("[ProminentU]: There was an error while loading the environment.")
+    getgenv().env._loaded = false
+    getgenv().env.LoadingFailed:Fire()
+else
+    env._loaded = true
+    env.Loaded:Fire()
 end
 
 setreadonly(env,true)

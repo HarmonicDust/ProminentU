@@ -29,7 +29,8 @@ end)
 # Example of the player encountering another player with the arrest spec
 ```lua
 -- Info: { ... }
-env:GetService("SpecService").Added:Connect(function(Info)
+-- Tag: Part
+env:GetService("SpecService").Added:Connect(function(Info, Tag)
     if Info.Name == "Arrest" then
         print("Player tried arresting " .. tostring(Info.Part.Parent))
     end
@@ -57,6 +58,14 @@ loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/HarmonicDust/Pro
 if not env:IsLoaded() then
     env.Loaded:Wait()
 end
+local ConfirmationService = env:GetService("ConfirmationService")
+local Poll = ConfirmationService.new("Do you like hashbrowns? :3")
+Poll.OnYes:Connect(function()
+    print("Wooo!!")
+end)
+Poll.OnNo:Connect(function()
+    print(":(((")
+end)
 ```
 **Note: There miiiiiight be bugs here & there, dunno tbh I haven't tested much**
 Yeah ig that's all there really is to say for devs who would like to use my module, feel free :>

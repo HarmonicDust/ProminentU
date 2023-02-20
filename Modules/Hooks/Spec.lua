@@ -4,11 +4,11 @@ local OldRemove = require(game:GetService("ReplicatedStorage").Module.UI).Circle
 Specs.Added = env.signal.new()
 Specs.Removed = env.signal.new()
 
-require(game:GetService("ReplicatedStorage").Module.UI).CircleAction.Add = newcclosure(function(Info)
+require(game:GetService("ReplicatedStorage").Module.UI).CircleAction.Add = newcclosure(function(Info, Tag)
     task.spawn(function()
-        Specs.Added:Fire(Info)
+        Specs.Added:Fire(Info, Tag)
     end)
-    OldAdd(Info)
+    OldAdd(Info, Tag)
 end)
 
 require(game:GetService("ReplicatedStorage").Module.UI).CircleAction.Remove = newcclosure(function(Part)
@@ -17,5 +17,3 @@ require(game:GetService("ReplicatedStorage").Module.UI).CircleAction.Remove = ne
     end)
     OldRemove(Part)
 end)
-
-return Specs
